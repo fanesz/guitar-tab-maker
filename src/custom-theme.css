@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-firstSection: firstSection 0.5s forwards;
+  --animate-onSection: onSection 0.5s forwards;
+
+  --color-primary: #c8fe0c;
+}
+
+@keyframes firstSection {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes onSection {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}

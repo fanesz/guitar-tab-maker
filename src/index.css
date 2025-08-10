@@ -1,0 +1,35 @@
+@import "tailwindcss";
+@import "./custom-fonts.css";
+@import "./custom-theme.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+* {
+  box-sizing: border-box;
+  text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+#root {
+  margin: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+button {
+  cursor: pointer;
+}
+
+.debug1 {
+  border: 1px solid red;
+}
+
+.debug2 {
+  border: 1px solid blue;
+}
+
+.debug3 {
+  border: 1px solid green;
+}

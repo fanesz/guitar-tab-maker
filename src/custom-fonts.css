@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-schabo-condensed: "schabo-condensed";
+
+  --font-helvetica-neue-bold: "helvetica-neue-bold";
+  --font-helvetica-neue-medium: "helvetica-neue-medium";
+  --font-helvetica-neue-roman: "helvetica-neue-roman";
+}
+
+@font-face {
+  font-family: "schabo-condensed";
+  src: url(/fonts/schabo-condensed/regular.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "helvetica-neue-bold";
+  src: url(/fonts/helvetica-neue/bold.otf) format("opentype");
+}
+@font-face {
+  font-family: "helvetica-neue-medium";
+  src: url(/fonts/helvetica-neue/medium.otf) format("opentype");
+}
+@font-face {
+  font-family: "helvetica-neue-roman";
+  src: url(/fonts/helvetica-neue/roman.otf) format("opentype");
+}
