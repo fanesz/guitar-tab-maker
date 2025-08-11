@@ -1,21 +1,20 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import clsx from "clsx";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import useEditor from "./hooks/useEditor";
 
 const Editor = () => {
-  const sectionRef = useRef<HTMLElement>(null);
   const { tabStaves } = useTabStaveStore();
-  const { selectedNote } = useCoreEditorStore();
+  const { editorRef, selectedNote } = useCoreEditorStore();
 
   const { handleKeyDown, handleNoteClick } = useEditor();
 
-  useEffect(() => sectionRef.current?.focus(), []);
+  useEffect(() => editorRef.current?.focus(), []);
 
   return (
     <section
-      ref={sectionRef}
+      ref={editorRef}
       tabIndex={0}
       className="border-r overflow-auto border-gray-300 dark:border-gray-700 p-4 bg-white dark:bg-gray-900 h-full focus:outline-0 min-h-0 flex-1"
       onKeyDown={handleKeyDown}
@@ -30,18 +29,20 @@ const Editor = () => {
                   {line.map((note, noteIdx) => {
                     const isSelectedColumn = selectedNote.note === noteIdx && selectedNote.stave === staveIdx;
                     return (
-                      <span
+                      <div
                         key={noteIdx}
-                        className={clsx(
-                          "cursor-pointer inline-flex justify-center items-center",
-                          "w-[1ch]",
-                          note.length > 1 && "scale-85",
-                          isSelectedColumn && "bg-gray-300/30"
-                        )}
+                        className={isSelectedColumn ? "bg-gray-300/30" : ""}
                         onClick={() => handleNoteClick(staveIdx, lineIdx, noteIdx)}
                       >
-                        {note}
-                      </span>
+                        <span
+                          className={clsx(
+                            "cursor-pointer inline-flex justify-center items-center w-[1ch]",
+                            note.length > 1 && "scale-85"
+                          )}
+                        >
+                          {note}
+                        </span>
+                      </div>
                     );
                   })}
                 </div>

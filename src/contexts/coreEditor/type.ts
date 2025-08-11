@@ -5,6 +5,7 @@ export interface SelectedNote {
 }
 
 export interface CoreEditorDataState {
+  editorRef: React.RefObject<HTMLDivElement>;
   selectedNote: SelectedNote;
 }
 

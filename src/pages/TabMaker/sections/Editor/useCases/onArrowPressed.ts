@@ -3,17 +3,15 @@ import { TabStave } from "@contexts/tabStave/type";
 
 // on ArrowRight pressed at the end of the line
 // will append a new blank note
-export const appendBlankNote = (currentStave: TabStave, selectedNote: SelectedNote): TabStave => {
-  if (currentStave.value[selectedNote.line].length === selectedNote.note + 1) {
-    return {
-      ...currentStave,
-      value: currentStave.value.map((line) => [...line, "-"]),
-    };
-  }
-
-  return currentStave;
+export const appendBlankNote = (currentStave: TabStave): TabStave => {
+  return {
+    ...currentStave,
+    value: currentStave.value.map((line) => [...line, "-"]),
+  };
 };
 
+// on any arrow key pressed
+// will move the selected note by return updated state
 export const moveSelectedNote = (keys: string, selectedNote: SelectedNote): Partial<SelectedNote> => {
   const { line, note } = selectedNote;
   const maxLineIdx = 5;
