@@ -1,4 +1,4 @@
-import { arrowKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
+import { ArrowKeys, arrowKeys, noteKeys } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
@@ -24,7 +24,7 @@ const useEditor = (): UseEditorReturn => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (isOnlyPressed(e, "ArrowRight")) {
+    if (isOnlyPressed(e, ArrowKeys.Right)) {
       if (currentStave.value[selectedNote.line].length === selectedNote.note + 1) {
         const updatedValue = appendBlankNote(currentStave);
         updateFocussedStave(updatedValue);

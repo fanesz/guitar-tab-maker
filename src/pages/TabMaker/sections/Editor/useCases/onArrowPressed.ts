@@ -1,3 +1,4 @@
+import { ArrowKeys } from "@consts/keyboardKeys";
 import { SelectedNote } from "@contexts/coreEditor/type";
 import { TabStave } from "@contexts/tabStave/type";
 
@@ -16,16 +17,16 @@ export const moveSelectedNote = (keys: string, selectedNote: SelectedNote): Part
   const { line, note } = selectedNote;
   const maxLineIdx = 5;
   switch (keys) {
-    case "ArrowRight":
+    case ArrowKeys.Right:
       return { line, note: note + 1 };
-    case "ArrowLeft":
+    case ArrowKeys.Left:
       return { line, note: Math.max(0, note - 1) };
-    case "ArrowUp":
+    case ArrowKeys.Up:
       if (line === 0) {
         return { stave: selectedNote.stave - 1, line: 5, note };
       }
       return { line: Math.max(0, line - 1), note };
-    case "ArrowDown":
+    case ArrowKeys.Down:
       if (line === maxLineIdx) {
         return { stave: selectedNote.stave + 1, line: 0, note };
       }
