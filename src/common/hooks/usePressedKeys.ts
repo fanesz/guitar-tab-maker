@@ -5,10 +5,7 @@ interface UsePressedKeysReturn {
   isOnlyPressedKeys: (e: React.KeyboardEvent, keys: string[]) => boolean;
   isPressed: (e: React.KeyboardEvent, key: string) => boolean;
   getModifierKeys: (e: React.KeyboardEvent) => string[];
-  isNoteKey: (e: React.KeyboardEvent) => boolean;
 }
-
-const NOTE_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "x"];
 
 const usePressedKeys = (): UsePressedKeysReturn => {
   const isOnlyPressed = useCallback((e: React.KeyboardEvent, key: string): boolean => {
@@ -37,16 +34,11 @@ const usePressedKeys = (): UsePressedKeysReturn => {
     return modifiers;
   }, []);
 
-  const isNoteKey = useCallback((e: React.KeyboardEvent): boolean => {
-    return NOTE_KEYS.includes(e.key.toLowerCase());
-  }, []);
-
   return {
     isOnlyPressed,
     isOnlyPressedKeys,
     isPressed,
     getModifierKeys,
-    isNoteKey,
   };
 };
 

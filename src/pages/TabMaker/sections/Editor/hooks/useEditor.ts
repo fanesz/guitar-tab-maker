@@ -1,4 +1,4 @@
-import { arrowKeys } from "@consts/keyboardKeys";
+import { arrowKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
@@ -8,18 +8,18 @@ import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
 
 interface UseEditorReturn {
-  setFocussedStave: (stave: TabStave) => void;
+  updateFocussedStave: (stave: TabStave) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
   handleNoteClick: (staveIdx: number, lineIdx: number, noteIdx: number) => void;
 }
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
   const { editorRef, selectedNote, updateSelectedNote } = useCoreEditorStore();
-  const { isOnlyPressed, isOnlyPressedKeys, isNoteKey } = usePressedKeys();
+  const { isOnlyPressed, isOnlyPressedKeys } = usePressedKeys();
 
   const currentStave = tabStaves[selectedNote.stave];
 
-  const setFocussedStave = (updatedStave: TabStave) => {
+  const updateFocussedStave = (updatedStave: TabStave) => {
     setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
   };
 
@@ -27,15 +27,15 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressed(e, "ArrowRight")) {
       if (currentStave.value[selectedNote.line].length === selectedNote.note + 1) {
         const updatedValue = appendBlankNote(currentStave);
-        setFocussedStave(updatedValue);
+        updateFocussedStave(updatedValue);
         scrollComponent(editorRef, "x");
       }
     }
 
-    if (isNoteKey(e)) {
+    if (isOnlyPressedKeys(e, noteKeys)) {
       e.preventDefault();
       const updatedStave = writeNote(currentStave, selectedNote, e.key);
-      setFocussedStave(updatedStave);
+      updateFocussedStave(updatedStave);
     }
 
     if (isOnlyPressedKeys(e, arrowKeys)) {
@@ -50,7 +50,7 @@ const useEditor = (): UseEditorReturn => {
   };
 
   return {
-    setFocussedStave,
+    updateFocussedStave,
     handleKeyDown,
     handleNoteClick,
   };
