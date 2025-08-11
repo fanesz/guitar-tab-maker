@@ -13,13 +13,17 @@ const ResizableSplit = (props: Props) => {
   const { leftPercent, rightPercent, handleMouseDown } = useResizableSplit(initial, min, max, offset);
 
   return (
-    <div className="flex flex-1">
-      <div style={{ width: `${leftPercent}vw` }}>{left}</div>
+    <div className="flex flex-1 min-h-0 h-full">
+      <div style={{ width: `${leftPercent}vw` }} className="min-h-0 overflow-hidden flex flex-col">
+        {left}
+      </div>
       <div
         className="w-1 bg-gray-400 dark:bg-gray-600 cursor-col-resize hover:bg-gray-500 dark:hover:bg-gray-500"
         onMouseDown={handleMouseDown}
       />
-      <div style={{ width: `${rightPercent}vw` }}>{right}</div>
+      <div style={{ width: `${rightPercent}vw` }} className="min-h-0 overflow-hidden flex flex-col">
+        {right}
+      </div>
     </div>
   );
 };

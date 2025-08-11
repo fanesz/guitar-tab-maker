@@ -16,10 +16,10 @@ const Editor = () => {
     <section
       ref={editorRef}
       tabIndex={0}
-      className="border-r overflow-auto border-gray-300 dark:border-gray-700 p-4 bg-white dark:bg-gray-900 h-full focus:outline-0 min-h-0 flex-1"
+      className="border-r overflow-auto border-gray-300 dark:border-gray-700 p-4 pb-10 bg-white dark:bg-gray-900 h-full focus:outline-0 min-h-0 flex-1 scroll-smooth"
       onKeyDown={handleKeyDown}
     >
-      <div className="w-max min-w-full flex flex-col gap-6 font-mono text-sm">
+      <div className="w-max min-w-full h-max flex flex-col gap-6 font-mono text-sm">
         {tabStaves.map((stave, staveIdx) => (
           <div key={staveIdx}>
             {stave.value.map((line, lineIdx) => {

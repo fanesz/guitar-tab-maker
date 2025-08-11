@@ -545,7 +545,16 @@ const initialValue: TabStaveDataState = {
 };
 
 const useTabStaveStore = create<TabStaveState>((set) => ({
-  tabStaves: [...initialValue.tabStaves, ...initialValue.tabStaves, ...initialValue.tabStaves],
+  tabStaves: [
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+    ...initialValue.tabStaves,
+  ],
   setTabStaves: (value: TabStave[]) => set({ tabStaves: value }),
 }));
 
