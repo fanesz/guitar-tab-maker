@@ -5,6 +5,7 @@ import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
 import { scrollComponent } from "@utils/componentRef";
 import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
+import { deleteBar, deleteNote } from "../useCases/onDeleteKeyPressed";
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
 
@@ -38,6 +39,20 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressedKeys(e, noteKeys)) {
       e.preventDefault();
       const updatedStave = writeNote(currentStave, selectedNote, e.key);
+      updateFocussedStave(updatedStave);
+    }
+
+    // keys: backspace
+    if (isOnlyPressed(e, "Backspace")) {
+      e.preventDefault();
+      const updatedStave = deleteNote(currentStave, selectedNote);
+      updateFocussedStave(updatedStave);
+    }
+
+    // keys: del
+    if (isOnlyPressed(e, "Delete")) {
+      e.preventDefault();
+      const updatedStave = deleteBar(currentStave, selectedNote);
       updateFocussedStave(updatedStave);
     }
 
