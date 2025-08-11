@@ -1,10 +1,10 @@
-type ScrollDirection = "x" | "y";
-type ScrollLogicalPosition = "start" | "center" | "end";
+export type ScrollDirection = "x" | "y";
+export type ScrollPosition = "start" | "center" | "end";
 
 export const scrollComponent = (
   ref: React.RefObject<HTMLElement>,
   direction: ScrollDirection = "x",
-  position: ScrollLogicalPosition = "end"
+  position: ScrollPosition = "end"
 ) => {
   const el = ref.current;
   if (!el) return;
