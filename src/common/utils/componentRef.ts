@@ -1,4 +1,4 @@
-export type ScrollDirection = "x" | "y";
+export type ScrollDirection = "x" | "y" | "both";
 export type ScrollPosition = "start" | "center" | "end";
 
 export const scrollComponent = (
@@ -9,17 +9,15 @@ export const scrollComponent = (
   const el = ref.current;
   if (!el) return;
 
-  if (direction === "x") {
-    if (position === "end") {
-      el.scrollTo({ left: el.scrollWidth, behavior: "smooth" });
-    } else if (position === "start") {
-      el.scrollTo({ left: 0, behavior: "smooth" });
-    }
-  } else if (direction === "y") {
-    if (position === "end") {
-      el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-    } else if (position === "start") {
-      el.scrollTo({ top: 0, behavior: "smooth" });
-    }
+  let left = el.scrollLeft;
+  let top = el.scrollTop;
+
+  if (direction === "x" || direction === "both") {
+    left = position === "end" ? el.scrollWidth : 0;
   }
+  if (direction === "y" || direction === "both") {
+    top = position === "end" ? el.scrollHeight : 0;
+  }
+
+  el.scrollTo({ left, top, behavior: "smooth" });
 };

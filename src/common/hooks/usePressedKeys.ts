@@ -1,10 +1,12 @@
 import { useCallback } from "react";
+import { ModifierKeys } from "@consts/keyboardKeys";
 
 interface UsePressedKeysReturn {
   isOnlyPressed: (e: React.KeyboardEvent, key: string) => boolean;
   isOnlyPressedKeys: (e: React.KeyboardEvent, keys: string[]) => boolean;
   isPressed: (e: React.KeyboardEvent, key: string) => boolean;
   getModifierKeys: (e: React.KeyboardEvent) => string[];
+  isOnlyPressedWithModifier: (e: React.KeyboardEvent, modifierKey: ModifierKeys) => boolean;
 }
 
 const usePressedKeys = (): UsePressedKeysReturn => {
@@ -21,10 +23,6 @@ const usePressedKeys = (): UsePressedKeysReturn => {
     [isOnlyPressed]
   );
 
-  const isPressed = useCallback((e: React.KeyboardEvent, key: string): boolean => {
-    return e.key === key;
-  }, []);
-
   const getModifierKeys = useCallback((e: React.KeyboardEvent): string[] => {
     const modifiers: string[] = [];
     if (e.ctrlKey) modifiers.push("Control");
@@ -34,11 +32,24 @@ const usePressedKeys = (): UsePressedKeysReturn => {
     return modifiers;
   }, []);
 
+  const isOnlyPressedWithModifier = useCallback(
+    (e: React.KeyboardEvent, modifierKey: ModifierKeys): boolean => {
+      const pressedModifiers = getModifierKeys(e);
+      return pressedModifiers.length === 1 && pressedModifiers[0] === modifierKey;
+    },
+    [getModifierKeys]
+  );
+
+  const isPressed = useCallback((e: React.KeyboardEvent, key: string): boolean => {
+    return e.key === key;
+  }, []);
+
   return {
     isOnlyPressed,
     isOnlyPressedKeys,
-    isPressed,
     getModifierKeys,
+    isOnlyPressedWithModifier,
+    isPressed,
   };
 };
 

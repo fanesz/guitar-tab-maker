@@ -1,11 +1,11 @@
-import { ArrowKeys, arrowKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
+import { ArrowKeys, arrowKeys, ModifierKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
 import { scrollComponent } from "@utils/componentRef";
 import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
-import { moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
+import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
 
 interface UseEditorReturn {
@@ -16,7 +16,7 @@ interface UseEditorReturn {
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
   const { editorRef, selectedNote, updateSelectedNote } = useCoreEditorStore();
-  const { isOnlyPressed, isOnlyPressedKeys } = usePressedKeys();
+  const { isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
 
   const currentStave = tabStaves[selectedNote.stave];
 
@@ -52,6 +52,15 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressedKeys(e, navigationKeys)) {
       e.preventDefault();
       const [updatedSelectedNote, scrollTarget] = moveSelectedNoteByNavKey(e.key, tabStaves, selectedNote);
+      updateSelectedNote(updatedSelectedNote);
+      console.log("scrollTarget", scrollTarget);
+      if (scrollTarget) scrollComponent(editorRef, ...scrollTarget);
+    }
+
+    // keys: ctrl+Home, ctrl+End
+    if (isOnlyPressedWithModifier(e, ModifierKeys.Control)) {
+      e.preventDefault();
+      const [updatedSelectedNote, scrollTarget] = moveSelectedNoteByCtrlNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
       if (scrollTarget) scrollComponent(editorRef, ...scrollTarget);
     }
