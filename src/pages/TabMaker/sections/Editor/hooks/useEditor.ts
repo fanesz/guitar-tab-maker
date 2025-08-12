@@ -1,11 +1,19 @@
-import { ArrowKeys, arrowKeys, ModifierKeys, NavigationKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
+import {
+  ArrowKeys,
+  arrowKeys,
+  deletionKeys,
+  ModifierKeys,
+  NavigationKeys,
+  navigationKeys,
+  noteKeys,
+} from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
 import { scrollComponent } from "@utils/componentRef";
 import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
-import { deleteBar, deleteNote } from "../useCases/onDeleteKeyPressed";
+import { clearNoteAndBar, shiftStaveBar } from "../useCases/onDeletionKeyPressed";
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
 
@@ -43,18 +51,18 @@ const useEditor = (): UseEditorReturn => {
       updateFocussedStave(updatedStave);
     }
 
-    // keys: backspace
-    if (isOnlyPressed(e, "Backspace")) {
+    // keys: backspace, del
+    if (isOnlyPressedKeys(e, deletionKeys)) {
       e.preventDefault();
-      const updatedStave = deleteNote(currentStave, selectedNote);
-      updateFocussedStave(updatedStave);
-    }
-
-    // keys: del
-    if (isOnlyPressed(e, "Delete")) {
-      e.preventDefault();
-      const updatedStave = deleteBar(currentStave, selectedNote);
-      updateFocussedStave(updatedStave);
+      const isLastFocussed = selectedNote.note === currentLine.length - 1;
+      if (isLastFocussed) {
+        const updatedStave = shiftStaveBar(currentStave);
+        updateFocussedStave(updatedStave);
+        updateSelectedNote({ note: currentLine.length - 1 });
+      } else {
+        const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
+        updateFocussedStave(updatedStave);
+      }
     }
 
     // keys: → ↑ ↓ ←
