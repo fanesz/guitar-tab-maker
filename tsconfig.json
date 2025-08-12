@@ -26,7 +26,7 @@
       "@components/*": ["./src/common/components/*"],
       "@consts/*": ["./src/common/consts/*"],
       "@hooks/*": ["./src/common/hooks/*"],
-      "@types/*": ["./src/common/types/*"],
+      "@commonTypes/*": ["./src/common/types/*"],
       "@utils/*": ["./src/common/utils/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@pages/*": ["./src/pages/*"],

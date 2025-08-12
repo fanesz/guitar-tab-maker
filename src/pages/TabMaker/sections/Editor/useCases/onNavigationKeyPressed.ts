@@ -1,6 +1,6 @@
+import { ScrollTargetReturn } from "@commonTypes/editor";
 import { SelectedNote } from "@contexts/coreEditor/type";
 import { TabStave } from "@contexts/tabStave/type";
-import { ScrollDirection, ScrollPosition } from "@utils/componentRef";
 
 // on navigation key pressed
 // will move the selected note by return updated state
@@ -8,7 +8,7 @@ export const moveSelectedNoteByNavKey = (
   keys: string,
   tabStaves: TabStave[],
   selectedNote: SelectedNote
-): [Partial<SelectedNote>, [ScrollDirection, ScrollPosition] | null] => {
+): [Partial<SelectedNote>, ScrollTargetReturn] => {
   const currentStave = tabStaves[selectedNote.stave];
   const currentLineNote = currentStave.value[selectedNote.line];
   switch (keys) {
@@ -43,7 +43,7 @@ export const moveSelectedNoteByCtrlNavKey = (
   keys: string,
   tabStaves: TabStave[],
   selectedNote: SelectedNote
-): [Partial<SelectedNote>, [ScrollDirection, ScrollPosition] | null] => {
+): [Partial<SelectedNote>, ScrollTargetReturn] => {
   const currentStave = tabStaves[selectedNote.stave];
   const currentLineNote = currentStave.value[selectedNote.line];
   switch (keys) {
