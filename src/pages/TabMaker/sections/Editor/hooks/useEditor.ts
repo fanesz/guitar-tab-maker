@@ -1,4 +1,4 @@
-import { ArrowKeys, arrowKeys, ModifierKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
+import { ArrowKeys, arrowKeys, ModifierKeys, NavigationKeys, navigationKeys, noteKeys } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
@@ -20,6 +20,7 @@ const useEditor = (): UseEditorReturn => {
   const { isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
 
   const currentStave = tabStaves[selectedNote.stave];
+  const currentLine = currentStave.value[selectedNote.line];
 
   const updateFocussedStave = (updatedStave: TabStave) => {
     setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
@@ -28,7 +29,7 @@ const useEditor = (): UseEditorReturn => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     // keys: →
     if (isOnlyPressed(e, ArrowKeys.Right)) {
-      if (currentStave.value[selectedNote.line].length === selectedNote.note + 1) {
+      if (currentLine.length === selectedNote.note + 1) {
         const updatedValue = appendBlankNote(currentStave);
         updateFocussedStave(updatedValue);
         scrollComponent(editorRef, "x");
@@ -68,12 +69,11 @@ const useEditor = (): UseEditorReturn => {
       e.preventDefault();
       const [updatedSelectedNote, scrollTarget] = moveSelectedNoteByNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
-      console.log("scrollTarget", scrollTarget);
       if (scrollTarget) scrollComponent(editorRef, ...scrollTarget);
     }
 
     // keys: ctrl+Home, ctrl+End
-    if (isOnlyPressedWithModifier(e, ModifierKeys.Control)) {
+    if (isOnlyPressedWithModifier(e, ModifierKeys.Control, [NavigationKeys.Home, NavigationKeys.End])) {
       e.preventDefault();
       const [updatedSelectedNote, scrollTarget] = moveSelectedNoteByCtrlNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);

@@ -6,7 +6,7 @@ interface UsePressedKeysReturn {
   isOnlyPressedKeys: (e: React.KeyboardEvent, keys: string[]) => boolean;
   isPressed: (e: React.KeyboardEvent, key: string) => boolean;
   getModifierKeys: (e: React.KeyboardEvent) => string[];
-  isOnlyPressedWithModifier: (e: React.KeyboardEvent, modifierKey: ModifierKeys) => boolean;
+  isOnlyPressedWithModifier: (e: React.KeyboardEvent, modifierKey: ModifierKeys, keys: string[]) => boolean;
 }
 
 const usePressedKeys = (): UsePressedKeysReturn => {
@@ -33,9 +33,9 @@ const usePressedKeys = (): UsePressedKeysReturn => {
   }, []);
 
   const isOnlyPressedWithModifier = useCallback(
-    (e: React.KeyboardEvent, modifierKey: ModifierKeys): boolean => {
+    (e: React.KeyboardEvent, modifierKey: ModifierKeys, keys: string[]): boolean => {
       const pressedModifiers = getModifierKeys(e);
-      return pressedModifiers.length === 1 && pressedModifiers[0] === modifierKey;
+      return pressedModifiers.length === 1 && pressedModifiers[0] === modifierKey && keys.includes(e.key);
     },
     [getModifierKeys]
   );
