@@ -15,10 +15,12 @@ const useCoreEditorStore = create<CoreEditorState>((set) => ({
   editorRef: initialValue.editorRef,
   selectedNote: initialValue.selectedNote,
   setSelectedNote: (note: SelectedNote) => set({ selectedNote: note }),
-  updateSelectedNote: (updatedNote: Partial<SelectedNote>) =>
+  updateSelectedNote: (updatedNote: Partial<SelectedNote>) => {
+    if (Object.keys(updatedNote).length === 0) return;
     set((state) => ({
       selectedNote: { ...state.selectedNote, ...updatedNote },
-    })),
+    }));
+  },
 }));
 
 export default useCoreEditorStore;
