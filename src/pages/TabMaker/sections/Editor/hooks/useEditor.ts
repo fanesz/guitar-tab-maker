@@ -12,7 +12,7 @@ import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
-import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
+import { appendBlankNote, moveSelectedNote, moveSelectedNoteByCtrl } from "../useCases/onArrowPressed";
 import { clearNoteAndBar, shiftStaveBar } from "../useCases/onDeletionKeyPressed";
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
@@ -82,6 +82,13 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressedKeys(e, arrowKeys)) {
       e.preventDefault();
       const updatedSelectedNote = moveSelectedNote(e.key, tabStaves, selectedNote);
+      updateSelectedNote(updatedSelectedNote);
+    }
+
+    // keys: ctrl + [→ ↑ ↓ ←]
+    if (isOnlyPressedWithModifier(e, ModifierKeys.Control, arrowKeys)) {
+      e.preventDefault();
+      const updatedSelectedNote = moveSelectedNoteByCtrl(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
     }
 

@@ -44,3 +44,73 @@ export const moveSelectedNote = (
       return {};
   }
 };
+
+// on any arrow key pressed with ctrl
+// will move the selected note per bar by return updated state
+export const moveSelectedNoteByCtrl = (
+  keys: string,
+  tabStaves: TabStave[],
+  selectedNote: SelectedNote
+): Partial<SelectedNote> => {
+  const { stave, line, note } = selectedNote;
+  const maxLineIdx = tabStaves[stave].value.length - 1;
+  const currentStaveValue = tabStaves[stave].value;
+  const currentStaveLine = currentStaveValue[line];
+
+  const isEndOfLine = note === currentStaveLine.length - 1;
+  const isEndOfStave = stave === tabStaves.length - 1;
+
+  switch (keys) {
+    case ArrowKeys.Right:
+      if (isEndOfLine) break;
+
+      for (let i = note; i < currentStaveLine.length; i++) {
+        if (currentStaveLine[i] !== "|") {
+          if (i < currentStaveLine.length - 1) continue;
+          return { note: i };
+        }
+        if (i > note + 1) {
+          return { note: i - 1 };
+        } else if (i === note + 1) {
+          return { note: i + 1 };
+        }
+      }
+
+      return {};
+
+    case ArrowKeys.Left:
+      if (note === 0) break;
+
+      for (let i = note - 1; i >= 0; i--) {
+        if (currentStaveLine[i] !== "|") {
+          if (i > 0) continue;
+          return { note: 0 };
+        }
+        if (i < note - 1) {
+          return { note: i + 1 };
+        } else if (i === note - 1) {
+          return { note: i - 1 };
+        }
+      }
+
+      return {};
+    case ArrowKeys.Up:
+      if (stave === 0 && line === 0) break;
+
+      if (line > 0) {
+        return { line: 0 };
+      }
+
+      return { stave: stave - 1, line: maxLineIdx };
+    case ArrowKeys.Down:
+      if (isEndOfStave && line === maxLineIdx) break;
+
+      if (line < maxLineIdx) {
+        return { line: maxLineIdx };
+      }
+
+      return { stave: stave + 1, line: 0 };
+  }
+
+  return {};
+};
