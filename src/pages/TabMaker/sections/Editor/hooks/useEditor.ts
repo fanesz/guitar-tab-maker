@@ -16,6 +16,7 @@ import { appendBlankNote, moveSelectedNote } from "../useCases/onArrowPressed";
 import { clearNoteAndBar, shiftStaveBar } from "../useCases/onDeletionKeyPressed";
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
+import { writeBarLine } from "../useCases/onOtherSymbolKeyPressed";
 
 interface UseEditorReturn {
   updateFocussedStave: (stave: TabStave) => void;
@@ -26,7 +27,7 @@ interface UseEditorReturn {
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
   const { selectedNote, updateSelectedNote } = useCoreEditorStore();
-  const { isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
+  const { isPressed, isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
 
   const currentStave = tabStaves[selectedNote.stave];
   const currentLine = currentStave.value[selectedNote.line];
@@ -41,8 +42,8 @@ const useEditor = (): UseEditorReturn => {
     // keys: →
     if (isOnlyPressed(e, ArrowKeys.Right)) {
       if (currentLine.length === selectedNote.note + 1) {
-        const updatedValue = appendBlankNote(currentStave);
-        updateFocussedStave(updatedValue);
+        const updatedStave = appendBlankNote(currentStave);
+        updateFocussedStave(updatedStave);
       }
     }
 
@@ -50,6 +51,14 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressedKeys(e, noteKeys)) {
       const updatedStave = writeNote(currentStave, selectedNote, e.key);
       updateFocussedStave(updatedStave);
+    }
+
+    // keys: |
+    if (isPressed(e, "|")) {
+      const updatedStave = writeBarLine(currentStave, selectedNote);
+      const appendedStave = appendBlankNote(updatedStave);
+      updateFocussedStave(appendedStave);
+      updateSelectedNote({ note: selectedNote.note + 1 });
     }
 
     // keys: backspace, del
