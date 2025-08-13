@@ -40,9 +40,8 @@ export const clearNoteAndBar = (keys: string, currentStave: TabStave, selectedNo
 // on backspace or del pressed at the end of the stave
 // will shift the bar by one
 export const shiftStaveBar = (currentStave: TabStave): TabStave => {
-  const updatedValue = [...currentStave.value];
-
-  updatedValue.map((lineArr) => lineArr.pop());
-
-  return { ...currentStave, value: updatedValue };
+  return {
+    ...currentStave,
+    value: currentStave.value.map((lineArr) => lineArr.slice(0, -1)),
+  };
 };

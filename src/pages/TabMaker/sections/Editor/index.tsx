@@ -38,7 +38,7 @@ const Editor = () => {
                     const isSelectedColumn = selectedNote.note === noteIdx && selectedNote.stave === staveIdx;
                     return (
                       <div
-                        key={noteIdx}
+                        key={`${staveIdx}-${lineIdx}-${noteIdx}`}
                         data-stave={staveIdx}
                         data-line={lineIdx}
                         data-note={noteIdx}

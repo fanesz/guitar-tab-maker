@@ -66,10 +66,12 @@ const useEditor = (): UseEditorReturn => {
     if (isOnlyPressedKeys(e, deletionKeys)) {
       e.preventDefault();
       const isLastFocussed = selectedNote.note === currentLine.length - 1;
-      if (isLastFocussed) {
+      if (isLastFocussed && currentLine[selectedNote.note] === "-") {
         const updatedStave = shiftStaveBar(currentStave);
         updateFocussedStave(updatedStave);
-        updateSelectedNote({ note: currentLine.length - 2 });
+
+        const updatedCurrentLine = updatedStave.value[selectedNote.line];
+        updateSelectedNote({ note: updatedCurrentLine.length - 1 });
       } else {
         const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
         updateFocussedStave(updatedStave);
