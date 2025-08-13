@@ -37,10 +37,9 @@ const useEditor = (): UseEditorReturn => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    e.preventDefault();
-
     // keys: →
     if (isOnlyPressed(e, ArrowKeys.Right)) {
+      e.preventDefault();
       if (currentLine.length === selectedNote.note + 1) {
         const updatedStave = appendBlankNote(currentStave);
         updateFocussedStave(updatedStave);
@@ -49,12 +48,14 @@ const useEditor = (): UseEditorReturn => {
 
     // keys: 0-9, x
     if (isOnlyPressedKeys(e, noteKeys)) {
+      e.preventDefault();
       const updatedStave = writeNote(currentStave, selectedNote, e.key);
       updateFocussedStave(updatedStave);
     }
 
     // keys: |
     if (isPressed(e, "|")) {
+      e.preventDefault();
       const updatedStave = writeBarLine(currentStave, selectedNote);
       const appendedStave = appendBlankNote(updatedStave);
       updateFocussedStave(appendedStave);
@@ -63,11 +64,12 @@ const useEditor = (): UseEditorReturn => {
 
     // keys: backspace, del
     if (isOnlyPressedKeys(e, deletionKeys)) {
+      e.preventDefault();
       const isLastFocussed = selectedNote.note === currentLine.length - 1;
       if (isLastFocussed) {
         const updatedStave = shiftStaveBar(currentStave);
         updateFocussedStave(updatedStave);
-        updateSelectedNote({ note: currentLine.length - 1 });
+        updateSelectedNote({ note: currentLine.length - 2 });
       } else {
         const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
         updateFocussedStave(updatedStave);
@@ -76,18 +78,21 @@ const useEditor = (): UseEditorReturn => {
 
     // keys: → ↑ ↓ ←
     if (isOnlyPressedKeys(e, arrowKeys)) {
+      e.preventDefault();
       const updatedSelectedNote = moveSelectedNote(e.key, selectedNote);
       updateSelectedNote(updatedSelectedNote);
     }
 
     // keys: Home, End, PageUp, PageDown
     if (isOnlyPressedKeys(e, navigationKeys)) {
+      e.preventDefault();
       const updatedSelectedNote = moveSelectedNoteByNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
     }
 
     // keys: ctrl+Home, ctrl+End
     if (isOnlyPressedWithModifier(e, ModifierKeys.Control, [NavigationKeys.Home, NavigationKeys.End])) {
+      e.preventDefault();
       const updatedSelectedNote = moveSelectedNoteByCtrlNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
     }
