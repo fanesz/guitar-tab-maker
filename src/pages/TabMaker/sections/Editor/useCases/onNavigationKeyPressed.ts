@@ -1,3 +1,4 @@
+import { NavigationKeys } from "@consts/keyboardKeys";
 import { SelectedNote } from "@contexts/coreEditor/type";
 import { TabStave } from "@contexts/tabStave/type";
 
@@ -8,29 +9,45 @@ export const moveSelectedNoteByNavKey = (
   tabStaves: TabStave[],
   selectedNote: SelectedNote
 ): Partial<SelectedNote> => {
-  const currentStave = tabStaves[selectedNote.stave];
-  const currentLineNote = currentStave.value[selectedNote.line];
+  const { stave, line, note } = selectedNote;
+  const currentStave = tabStaves[stave];
+  const currentLineNote = currentStave.value[line];
+
   switch (keys) {
-    case "Home":
-      if (selectedNote.note > 0) {
+    case NavigationKeys.Home:
+      if (note > 0) {
         return { note: 0 };
       }
       break;
-    case "End":
-      if (selectedNote.note < currentLineNote.length - 1) {
+    case NavigationKeys.End:
+      if (note < currentLineNote.length - 1) {
         return { note: currentLineNote.length - 1 };
       }
       break;
-    case "PageUp":
-      if (selectedNote.stave > 0) {
-        return { stave: selectedNote.stave - 1 };
+    case NavigationKeys.PageUp:
+      if (stave > 0) {
+        const newStaveValue = tabStaves[stave - 1].value;
+        if (newStaveValue[line].length <= note) {
+          return {
+            stave: stave - 1,
+            note: newStaveValue[line].length - 1,
+          };
+        }
+        return { stave: stave - 1 };
       }
-      return {};
-    case "PageDown":
-      if (selectedNote.stave < tabStaves.length - 1) {
-        return { stave: selectedNote.stave + 1 };
+      break;
+    case NavigationKeys.PageDown:
+      if (stave < tabStaves.length - 1) {
+        const newStaveValue = tabStaves[stave + 1].value;
+        if (newStaveValue[line].length <= note) {
+          return {
+            stave: stave + 1,
+            note: newStaveValue[line].length - 1,
+          };
+        }
+        return { stave: stave + 1 };
       }
-      return {};
+      break;
   }
 
   return {};
@@ -43,16 +60,18 @@ export const moveSelectedNoteByCtrlNavKey = (
   tabStaves: TabStave[],
   selectedNote: SelectedNote
 ): Partial<SelectedNote> => {
-  const currentStave = tabStaves[selectedNote.stave];
-  const currentLineNote = currentStave.value[selectedNote.line];
+  const { stave, line, note } = selectedNote;
+
+  const currentStave = tabStaves[stave];
+  const currentLineNote = currentStave.value[line];
   switch (keys) {
-    case "Home":
-      if (selectedNote.note > 0) {
+    case NavigationKeys.Home:
+      if (note > 0) {
         return { stave: 0, line: 0, note: 0 };
       }
       break;
-    case "End":
-      if (selectedNote.note < currentLineNote.length - 1) {
+    case NavigationKeys.End:
+      if (note < currentLineNote.length - 1) {
         const lastStave = tabStaves[tabStaves.length - 1].value;
         return {
           stave: tabStaves.length - 1,
