@@ -101,12 +101,28 @@ export const moveSelectedNoteByCtrl = (
         return { line: 0 };
       }
 
+      if (tabStaves[stave - 1].value[line].length <= note) {
+        return {
+          stave: stave - 1,
+          line: maxLineIdx,
+          note: tabStaves[stave - 1].value[line].length - 1,
+        };
+      }
+
       return { stave: stave - 1, line: maxLineIdx };
     case ArrowKeys.Down:
       if (isEndOfStave && line === maxLineIdx) break;
 
       if (line < maxLineIdx) {
         return { line: maxLineIdx };
+      }
+
+      if (tabStaves[stave + 1].value[0].length <= note) {
+        return {
+          stave: stave + 1,
+          line: 0,
+          note: tabStaves[stave + 1].value[line].length - 1,
+        };
       }
 
       return { stave: stave + 1, line: 0 };
