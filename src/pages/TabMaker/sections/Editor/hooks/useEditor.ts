@@ -81,7 +81,7 @@ const useEditor = (): UseEditorReturn => {
     // keys: → ↑ ↓ ←
     if (isOnlyPressedKeys(e, arrowKeys)) {
       e.preventDefault();
-      const updatedSelectedNote = moveSelectedNote(e.key, selectedNote);
+      const updatedSelectedNote = moveSelectedNote(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
     }
 
