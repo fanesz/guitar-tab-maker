@@ -1,3 +1,4 @@
+import { Direction } from "@commonTypes/editor";
 import {
   ArrowKeys,
   arrowKeys,
@@ -21,6 +22,7 @@ interface UseEditorReturn {
   updateFocussedStave: (stave: TabStave) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
   handleNoteClick: (staveIdx: number, lineIdx: number, noteIdx: number) => void;
+  handleScrollOnOutOfView: (direction: Direction, el: Element) => void;
 }
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
@@ -93,10 +95,22 @@ const useEditor = (): UseEditorReturn => {
     updateSelectedNote({ stave: staveIdx, line: lineIdx, note: noteIdx });
   };
 
+  const handleScrollOnOutOfView = (direction: Direction, el: Element) => {
+    const isHorizontal = direction === "left" || direction === "right";
+    const isVertical = direction === "top" || direction === "bottom";
+
+    el.scrollIntoView({
+      behavior: "smooth",
+      block: isVertical ? "center" : "nearest",
+      inline: isHorizontal ? "center" : "nearest",
+    });
+  };
+
   return {
     updateFocussedStave,
     handleKeyDown,
     handleNoteClick,
+    handleScrollOnOutOfView,
   };
 };
 

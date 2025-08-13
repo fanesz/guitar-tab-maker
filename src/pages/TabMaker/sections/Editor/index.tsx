@@ -2,15 +2,23 @@ import { useEffect } from "react";
 import clsx from "clsx";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
+import useDetectElementInView from "@hooks/useDetectElementInView";
 import useEditor from "./hooks/useEditor";
 
 const Editor = () => {
   const { tabStaves } = useTabStaveStore();
   const { editorRef, selectedNote } = useCoreEditorStore();
+  const { handleKeyDown, handleNoteClick, handleScrollOnOutOfView } = useEditor();
 
-  const { handleKeyDown, handleNoteClick } = useEditor();
+  useEffect(() => {
+    editorRef.current?.focus();
+  }, []);
 
-  useEffect(() => editorRef.current?.focus(), []);
+  useDetectElementInView({
+    containerRef: editorRef,
+    selector: `[data-stave="${selectedNote.stave}"][data-line="${selectedNote.line}"][data-note="${selectedNote.note}"]`,
+    onOutOfView: handleScrollOnOutOfView,
+  });
 
   return (
     <section
@@ -31,6 +39,9 @@ const Editor = () => {
                     return (
                       <div
                         key={noteIdx}
+                        data-stave={staveIdx}
+                        data-line={lineIdx}
+                        data-note={noteIdx}
                         className={isSelectedColumn ? "bg-gray-300/30" : ""}
                         onClick={() => handleNoteClick(staveIdx, lineIdx, noteIdx)}
                       >
