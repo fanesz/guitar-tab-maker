@@ -64,14 +64,15 @@ export const moveSelectedNoteByCtrlNavKey = (
 
   const currentStave = tabStaves[stave];
   const currentLineNote = currentStave.value[line];
+
   switch (keys) {
     case NavigationKeys.Home:
-      if (note > 0) {
+      if (note > 0 || stave > 0 || line > 0) {
         return { stave: 0, line: 0, note: 0 };
       }
       break;
     case NavigationKeys.End:
-      if (note < currentLineNote.length - 1) {
+      if (note < currentLineNote.length - 1 || stave < tabStaves.length - 1 || line < currentLineNote.length - 1) {
         const lastStave = tabStaves[tabStaves.length - 1].value;
         return {
           stave: tabStaves.length - 1,
