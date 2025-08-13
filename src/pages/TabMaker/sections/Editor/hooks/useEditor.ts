@@ -49,8 +49,12 @@ const useEditor = (): UseEditorReturn => {
     // keys: 0-9, x
     if (isOnlyPressedKeys(e, noteKeys)) {
       e.preventDefault();
-      const updatedStave = writeNote(currentStave, selectedNote, e.key);
+      let updatedStave = writeNote(currentStave, selectedNote, e.key);
+      if (currentLine.length - 1 < selectedNote.note + 1) {
+        updatedStave = appendBlankNote(updatedStave);
+      }
       updateFocussedStave(updatedStave);
+      updateSelectedNote({ note: selectedNote.note + 1 });
     }
 
     // keys: |
