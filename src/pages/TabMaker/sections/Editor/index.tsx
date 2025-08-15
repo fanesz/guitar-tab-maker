@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import AutoResizeTextarea from "@components/Inputs/AutoResizeTextarea";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import useDetectElementInView from "@hooks/useDetectElementInView";
@@ -8,7 +9,8 @@ import useEditor from "./hooks/useEditor";
 const Editor = () => {
   const { tabStaves } = useTabStaveStore();
   const { editorRef, selectedNote } = useCoreEditorStore();
-  const { handleKeyDown, handleTextareaKeyDown, handleNoteClick, handleScrollOnOutOfView } = useEditor();
+  const { handleKeyDown, handleTextareaKeyDown, handleNoteClick, handleScrollOnOutOfView, handleChangeTextarea } =
+    useEditor();
 
   const isTextareaFocused = useIsChildFocused(editorRef, "[data-focus='textarea']");
   const isStaveFocused = useIsChildFocused(editorRef, "[data-focus='stave']");
@@ -38,8 +40,12 @@ const Editor = () => {
       <div className="w-max min-w-full h-max flex flex-col gap-6 font-mono text-sm">
         {tabStaves.map((stave, staveIdx) => (
           <div key={staveIdx}>
-            <div className="debug1" data-focus="textarea">
-              <textarea className="w-full" />
+            <div data-focus="textarea">
+              <AutoResizeTextarea
+                className="w-full"
+                value={stave.chord}
+                onChange={(e) => handleChangeTextarea(staveIdx, e.target.value)}
+              />
             </div>
             <div data-focus="stave" tabIndex={0}>
               {stave.value.map((line, lineIdx) => {

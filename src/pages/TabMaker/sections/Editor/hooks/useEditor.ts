@@ -20,6 +20,7 @@ import { clearNoteAndBar, removeBlankNote, shiftStaveBar } from "../useCases/onD
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { insertBlankNote, writeNote } from "../useCases/onNoteWordPressed";
 import { writeBarLine } from "../useCases/onOtherSymbolKeyPressed";
+import { replaceTabWithSpaces } from "../useCases/onTabPressedAtInput";
 import useHistory from "./useHistory";
 
 interface UseEditorReturn {
@@ -28,6 +29,7 @@ interface UseEditorReturn {
   handleTextareaKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
   handleNoteClick: (staveIdx: number, lineIdx: number, noteIdx: number) => void;
   handleScrollOnOutOfView: (directions: Direction[], el: Element) => void;
+  handleChangeTextarea: (staveIdx: number, value: string) => void;
 }
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
@@ -150,7 +152,24 @@ const useEditor = (): UseEditorReturn => {
   };
 
   const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    e.preventDefault();
+    const target = e.target as HTMLTextAreaElement;
+    if (target.tagName !== "TEXTAREA") return;
+
+    if (isPressed(e, WhitespaceKeys.Tab)) {
+      e.preventDefault();
+
+      const start = target.selectionStart;
+      const spacesLength = 4;
+
+      updateFocussedStave({
+        ...currentStave,
+        chord: replaceTabWithSpaces(target, spacesLength),
+      });
+
+      requestAnimationFrame(() => {
+        target.selectionStart = target.selectionEnd = start + spacesLength;
+      });
+    }
   };
 
   const updateFocussedStave = (updatedStave: TabStave) => {
@@ -173,12 +192,17 @@ const useEditor = (): UseEditorReturn => {
     });
   };
 
+  const handleChangeTextarea = (staveIdx: number, value: string) => {
+    setTabStaves(tabStaves.map((stave, idx) => (idx === staveIdx ? { ...stave, chord: value } : stave)));
+  };
+
   return {
     updateFocussedStave,
     handleKeyDown,
     handleTextareaKeyDown,
     handleNoteClick,
     handleScrollOnOutOfView,
+    handleChangeTextarea,
   };
 };
 
