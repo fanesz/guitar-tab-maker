@@ -45,3 +45,23 @@ export const shiftStaveBar = (currentStave: TabStave): TabStave => {
     value: currentStave.value.map((lineArr) => lineArr.slice(0, -1)),
   };
 };
+
+// on backspace or del pressed while the note in a bar is blank
+// will remove the blank note
+export const removeBlankNote = (currentStave: TabStave, selectedNote: SelectedNote): TabStave => {
+  const { note } = selectedNote;
+
+  const updatedValue = currentStave.value.map((lineArr) => {
+    const updatedLine = [...lineArr];
+    updatedLine.splice(note, 1);
+    if (updatedLine.length === 0) {
+      updatedLine.push("-");
+    }
+    return updatedLine;
+  });
+
+  return {
+    ...currentStave,
+    value: updatedValue,
+  };
+};

@@ -21,3 +21,15 @@ export const writeNote = (currentStave: TabStave, selectedNote: SelectedNote, no
 
   return { ...currentStave, value: updatedValue };
 };
+
+// on space pressed
+// will insert blank note in a bar to next to focussed note
+export const insertBlankNote = (currentStave: TabStave, selectedNote: SelectedNote): TabStave => {
+  const { note } = selectedNote;
+
+  const updatedValue = currentStave.value.map((lineArr) => {
+    return lineArr.slice(0, note + 1).concat("-", ...lineArr.slice(note + 1));
+  });
+
+  return { ...currentStave, value: updatedValue };
+};

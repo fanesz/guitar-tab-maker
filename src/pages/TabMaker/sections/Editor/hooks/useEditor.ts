@@ -16,9 +16,9 @@ import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
 import { appendBlankNote, moveSelectedNote, moveSelectedNoteByCtrl } from "../useCases/onArrowPressed";
-import { clearNoteAndBar, shiftStaveBar } from "../useCases/onDeletionKeyPressed";
+import { clearNoteAndBar, removeBlankNote, shiftStaveBar } from "../useCases/onDeletionKeyPressed";
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
-import { writeNote } from "../useCases/onNoteWordPressed";
+import { insertBlankNote, writeNote } from "../useCases/onNoteWordPressed";
 import { writeBarLine } from "../useCases/onOtherSymbolKeyPressed";
 import useHistory from "./useHistory";
 
@@ -74,19 +74,35 @@ const useEditor = (): UseEditorReturn => {
       updateSelectedNote({ note: selectedNote.note + 1 });
     }
 
+    // keys: space
+    if (isOnlyPressedKeys(e, [WhitespaceKeys.Space])) {
+      e.preventDefault();
+
+      const updatedStave = insertBlankNote(currentStave, selectedNote);
+      updateFocussedStave(updatedStave);
+      updateSelectedNote({ note: selectedNote.note + 1 });
+    }
+
     // keys: backspace, del
     if (isOnlyPressedKeys(e, deletionKeys)) {
       e.preventDefault();
-      const isLastFocussed = selectedNote.note === currentLine.length - 1;
-      if (isLastFocussed && currentLine[selectedNote.note] === "-") {
-        const updatedStave = shiftStaveBar(currentStave);
-        updateFocussedStave(updatedStave);
+      const isAllBlank = currentStave.value.every((lineArr) => lineArr[selectedNote.note] === "-");
 
-        const updatedCurrentLine = updatedStave.value[selectedNote.line];
-        updateSelectedNote({ note: updatedCurrentLine.length - 1 });
-      } else {
-        const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
+      if (isAllBlank) {
+        const updatedStave = removeBlankNote(currentStave, selectedNote);
         updateFocussedStave(updatedStave);
+      } else {
+        const isLastFocussed = selectedNote.note === currentLine.length - 1;
+        if (isLastFocussed && currentLine[selectedNote.note] === "-") {
+          const updatedStave = shiftStaveBar(currentStave);
+          updateFocussedStave(updatedStave);
+
+          const updatedCurrentLine = updatedStave.value[selectedNote.line];
+          updateSelectedNote({ note: updatedCurrentLine.length - 1 });
+        } else {
+          const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
+          updateFocussedStave(updatedStave);
+        }
       }
     }
 
