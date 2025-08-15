@@ -134,11 +134,13 @@ const useEditor = (): UseEditorReturn => {
       e.preventDefault();
       if (e.key === "z") {
         undo((value) => {
+          if (!value || value?.tabStaves?.length === 0) return;
           setTabStaves(value.tabStaves);
           setSelectedNote(value.selectedNote);
         });
       } else if (e.key === "y") {
         redo((value) => {
+          if (!value || value?.tabStaves?.length === 0) return;
           setTabStaves(value.tabStaves);
           setSelectedNote(value.selectedNote);
         });
