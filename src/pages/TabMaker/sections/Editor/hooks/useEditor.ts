@@ -39,11 +39,6 @@ const useEditor = (): UseEditorReturn => {
   const currentStave = tabStaves[selectedNote.stave];
   const currentLine = currentStave.value[selectedNote.line];
 
-  const updateFocussedStave = (updatedStave: TabStave) => {
-    setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
-    setPrevAction(HistoryAction.WRITE);
-  };
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
     // keys: →
     if (isOnlyPressed(e, ArrowKeys.Right)) {
@@ -149,6 +144,11 @@ const useEditor = (): UseEditorReturn => {
         });
       }
     }
+  };
+
+  const updateFocussedStave = (updatedStave: TabStave) => {
+    setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
+    setPrevAction(HistoryAction.WRITE);
   };
 
   const handleNoteClick = (staveIdx: number, lineIdx: number, noteIdx: number) => {

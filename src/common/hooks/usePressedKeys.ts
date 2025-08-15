@@ -7,6 +7,7 @@ interface UsePressedKeysReturn {
   isPressed: (e: React.KeyboardEvent, key: string) => boolean;
   getModifierKeys: (e: React.KeyboardEvent) => string[];
   isOnlyPressedWithModifier: (e: React.KeyboardEvent, modifierKey: ModifierKeys, keys: string[]) => boolean;
+  isModifierHeld: (e: React.KeyboardEvent, modifierKey: ModifierKeys) => boolean;
 }
 
 const usePressedKeys = (): UsePressedKeysReturn => {
@@ -44,12 +45,28 @@ const usePressedKeys = (): UsePressedKeysReturn => {
     return e.key === key;
   }, []);
 
+  const isModifierHeld = useCallback((e: React.KeyboardEvent, modifierKey: ModifierKeys): boolean => {
+    switch (modifierKey) {
+      case "Control":
+        return e.ctrlKey;
+      case "Alt":
+        return e.altKey;
+      case "Shift":
+        return e.shiftKey;
+      case "Meta":
+        return e.metaKey;
+      default:
+        return false;
+    }
+  }, []);
+
   return {
     isOnlyPressed,
     isOnlyPressedKeys,
     getModifierKeys,
     isOnlyPressedWithModifier,
     isPressed,
+    isModifierHeld,
   };
 };
 
