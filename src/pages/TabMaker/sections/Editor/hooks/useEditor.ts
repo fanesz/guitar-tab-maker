@@ -78,18 +78,16 @@ const useEditor = (): UseEditorReturn => {
       if (isAllBlank) {
         const updatedStave = removeBlankNote(currentStave, selectedNote);
         updateFocussedStave(updatedStave);
-      } else {
-        const isLastFocussed = selectedNote.note === currentLine.length - 1;
-        if (isLastFocussed && currentLine[selectedNote.note] === "-") {
+        if (isEndOfLine) {
           const updatedStave = shiftStaveBar(currentStave);
           updateFocussedStave(updatedStave);
 
           const updatedCurrentLine = updatedStave.value[selectedNote.line];
           updateSelectedNote({ note: updatedCurrentLine.length - 1 });
-        } else {
-          const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
-          updateFocussedStave(updatedStave);
         }
+      } else {
+        const updatedStave = clearNoteAndBar(e.key, currentStave, selectedNote);
+        updateFocussedStave(updatedStave);
       }
     }
 
