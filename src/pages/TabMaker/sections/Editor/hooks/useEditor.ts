@@ -1,4 +1,5 @@
 import { Direction } from "@commonTypes/editor";
+import { HistoryAction } from "@consts/actions";
 import {
   ArrowKeys,
   arrowKeys,
@@ -9,6 +10,7 @@ import {
   noteKeys,
 } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
+import useHistoryStore from "@contexts/history/store";
 import useTabStaveStore from "@contexts/tabStave/store";
 import { TabStave } from "@contexts/tabStave/type";
 import usePressedKeys from "@hooks/usePressedKeys";
@@ -17,6 +19,7 @@ import { clearNoteAndBar, shiftStaveBar } from "../useCases/onDeletionKeyPressed
 import { moveSelectedNoteByCtrlNavKey, moveSelectedNoteByNavKey } from "../useCases/onNavigationKeyPressed";
 import { writeNote } from "../useCases/onNoteWordPressed";
 import { writeBarLine } from "../useCases/onOtherSymbolKeyPressed";
+import useHistory from "./useHistory";
 
 interface UseEditorReturn {
   updateFocussedStave: (stave: TabStave) => void;
@@ -26,14 +29,18 @@ interface UseEditorReturn {
 }
 const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
-  const { selectedNote, updateSelectedNote } = useCoreEditorStore();
+  const { selectedNote, updateSelectedNote, setSelectedNote } = useCoreEditorStore();
+  const { undo, redo, setPrevAction } = useHistoryStore();
   const { isPressed, isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
+
+  useHistory();
 
   const currentStave = tabStaves[selectedNote.stave];
   const currentLine = currentStave.value[selectedNote.line];
 
   const updateFocussedStave = (updatedStave: TabStave) => {
     setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
+    setPrevAction(HistoryAction.WRITE);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
@@ -108,6 +115,22 @@ const useEditor = (): UseEditorReturn => {
       e.preventDefault();
       const updatedSelectedNote = moveSelectedNoteByCtrlNavKey(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
+    }
+
+    // keys: ctrl+z, ctrl+y
+    if (isOnlyPressedWithModifier(e, ModifierKeys.Control, ["z", "y"])) {
+      e.preventDefault();
+      if (e.key === "z") {
+        undo((value) => {
+          setTabStaves(value.tabStaves);
+          setSelectedNote(value.selectedNote);
+        });
+      } else if (e.key === "y") {
+        redo((value) => {
+          setTabStaves(value.tabStaves);
+          setSelectedNote(value.selectedNote);
+        });
+      }
     }
   };
 
