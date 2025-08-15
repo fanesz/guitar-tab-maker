@@ -32,23 +32,15 @@ const useEditor = (): UseEditorReturn => {
   const { tabStaves, setTabStaves } = useTabStaveStore();
   const { selectedNote, updateSelectedNote, setSelectedNote } = useCoreEditorStore();
   const { undo, redo, setPrevAction } = useHistoryStore();
-  const { isPressed, isOnlyPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
+  const { isPressed, isOnlyPressedKeys, isOnlyPressedWithModifier } = usePressedKeys();
 
   useHistory();
 
   const currentStave = tabStaves[selectedNote.stave];
   const currentLine = currentStave.value[selectedNote.line];
+  const isEndOfLine = currentLine.length === selectedNote.note + 1;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    // keys: →
-    if (isOnlyPressed(e, ArrowKeys.Right)) {
-      e.preventDefault();
-      if (currentLine.length === selectedNote.note + 1) {
-        const updatedStave = appendBlankNote(currentStave);
-        updateFocussedStave(updatedStave);
-      }
-    }
-
     // keys: 0-9, x
     if (isOnlyPressedKeys(e, noteKeys)) {
       e.preventDefault();
@@ -106,12 +98,22 @@ const useEditor = (): UseEditorReturn => {
       e.preventDefault();
       const updatedSelectedNote = moveSelectedNote(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);
+
+      if (isPressed(e, ArrowKeys.Right) && isEndOfLine) {
+        const updatedStave = appendBlankNote(tabStaves[selectedNote.stave]);
+        setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
+      }
     }
 
     // keys: ctrl + [→ ↑ ↓ ←] | aliases: tab
     if (isOnlyPressedWithModifier(e, ModifierKeys.Control, arrowKeys) || isOnlyPressedKeys(e, [WhitespaceKeys.Tab])) {
       e.preventDefault();
       const updatedSelectedNote = moveSelectedNoteByCtrl(e.key, tabStaves, selectedNote);
+
+      if (isPressed(e, ArrowKeys.Right) && isEndOfLine) {
+        const updatedStave = appendBlankNote(tabStaves[selectedNote.stave], 5);
+        setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
+      }
       updateSelectedNote(updatedSelectedNote);
     }
 

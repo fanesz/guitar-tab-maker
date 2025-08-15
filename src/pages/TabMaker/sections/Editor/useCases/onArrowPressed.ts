@@ -4,10 +4,11 @@ import { TabStave } from "@contexts/tabStave/type";
 
 // on ArrowRight pressed at the end of the line
 // will append a new blank note
-export const appendBlankNote = (currentStave: TabStave): TabStave => {
+export const appendBlankNote = (currentStave: TabStave, total: number = 1): TabStave => {
+  const newNotes = "-".repeat(total < 1 ? 1 : total).split("");
   return {
     ...currentStave,
-    value: currentStave.value.map((line) => [...line, "-"]),
+    value: currentStave.value.map((line) => line.concat(newNotes)),
   };
 };
 
