@@ -8,6 +8,7 @@ import {
   NavigationKeys,
   navigationKeys,
   noteKeys,
+  WhitespaceKeys,
 } from "@consts/keyboardKeys";
 import useCoreEditorStore from "@contexts/coreEditor/store";
 import useHistoryStore from "@contexts/history/store";
@@ -96,8 +97,8 @@ const useEditor = (): UseEditorReturn => {
       updateSelectedNote(updatedSelectedNote);
     }
 
-    // keys: ctrl + [→ ↑ ↓ ←]
-    if (isOnlyPressedWithModifier(e, ModifierKeys.Control, arrowKeys)) {
+    // keys: ctrl + [→ ↑ ↓ ←] | aliases: tab
+    if (isOnlyPressedWithModifier(e, ModifierKeys.Control, arrowKeys) || isOnlyPressedKeys(e, [WhitespaceKeys.Tab])) {
       e.preventDefault();
       const updatedSelectedNote = moveSelectedNoteByCtrl(e.key, tabStaves, selectedNote);
       updateSelectedNote(updatedSelectedNote);

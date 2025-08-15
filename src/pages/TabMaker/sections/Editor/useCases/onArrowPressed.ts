@@ -1,4 +1,4 @@
-import { ArrowKeys } from "@consts/keyboardKeys";
+import { ArrowKeys, WhitespaceKeys } from "@consts/keyboardKeys";
 import { SelectedNote } from "@contexts/coreEditor/type";
 import { TabStave } from "@contexts/tabStave/type";
 
@@ -62,6 +62,7 @@ export const moveSelectedNoteByCtrl = (
 
   switch (keys) {
     case ArrowKeys.Right:
+    case WhitespaceKeys.Tab:
       if (isEndOfLine) break;
 
       for (let i = note; i < currentStaveLine.length; i++) {

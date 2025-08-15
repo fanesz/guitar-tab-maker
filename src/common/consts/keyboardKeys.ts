@@ -32,6 +32,11 @@ export enum DeletionKeys {
   Delete = "Delete",
 }
 
+export enum WhitespaceKeys {
+  Space = " ",
+  Tab = "Tab",
+}
+
 export const arrowKeys = [ArrowKeys.Up, ArrowKeys.Down, ArrowKeys.Left, ArrowKeys.Right];
 export const navigationKeys = [NavigationKeys.Home, NavigationKeys.End, NavigationKeys.PageUp, NavigationKeys.PageDown];
 export const modifierKeys = [ModifierKeys.Control, ModifierKeys.Alt, ModifierKeys.Shift, ModifierKeys.Meta];
@@ -43,4 +48,5 @@ export const arithmeticKeys = [
   ArithmeticKeys.Multiply,
 ];
 export const deletionKeys = [DeletionKeys.Backspace, DeletionKeys.Delete];
+export const whitespaceKeys = [WhitespaceKeys.Space, WhitespaceKeys.Tab];
 export const noteKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "x"];
