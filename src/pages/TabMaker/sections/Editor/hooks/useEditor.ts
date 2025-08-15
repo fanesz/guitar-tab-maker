@@ -25,6 +25,7 @@ import useHistory from "./useHistory";
 interface UseEditorReturn {
   updateFocussedStave: (stave: TabStave) => void;
   handleKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
+  handleTextareaKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
   handleNoteClick: (staveIdx: number, lineIdx: number, noteIdx: number) => void;
   handleScrollOnOutOfView: (directions: Direction[], el: Element) => void;
 }
@@ -148,6 +149,10 @@ const useEditor = (): UseEditorReturn => {
     }
   };
 
+  const handleTextareaKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    e.preventDefault();
+  };
+
   const updateFocussedStave = (updatedStave: TabStave) => {
     setTabStaves(tabStaves.map((stave, idx) => (idx === selectedNote.stave ? updatedStave : stave)));
     setPrevAction(HistoryAction.WRITE);
@@ -171,6 +176,7 @@ const useEditor = (): UseEditorReturn => {
   return {
     updateFocussedStave,
     handleKeyDown,
+    handleTextareaKeyDown,
     handleNoteClick,
     handleScrollOnOutOfView,
   };

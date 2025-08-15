@@ -5,10 +5,11 @@ interface Props {
   containerRef: React.RefObject<HTMLElement>;
   selector: string;
   onOutOfView: (direction: Direction[], element: Element) => void;
+  trigger?: boolean;
 }
 
 export default function useDetectElementInView(props: Props) {
-  const { containerRef, selector, onOutOfView } = props;
+  const { containerRef, selector, onOutOfView, trigger = true } = props;
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -36,7 +37,9 @@ export default function useDetectElementInView(props: Props) {
     }
 
     if (directions.length > 0) {
-      onOutOfView?.(directions, el);
+      if (trigger && onOutOfView) {
+        onOutOfView(directions, el);
+      }
     }
-  }, [containerRef, selector, onOutOfView]);
+  }, [containerRef, selector, onOutOfView, trigger]);
 }
